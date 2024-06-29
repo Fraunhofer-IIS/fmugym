@@ -1,5 +1,5 @@
 # FMUGym: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)![CI](https://github.com/Fraunhofer-IIS/fmugym/actions/workflows/python-package.yml/badge.svg)
 
 <img src="img/lib_interfaces.png" alt="FMUGymInterfaces" />
 
