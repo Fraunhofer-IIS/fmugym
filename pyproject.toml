@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "fmugym"
+version = "0.1.0"
+description = ""
+authors = ["Konstantin Wrede <konstantin.wrede@eas.iis.fraunhofer.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.26.4"
+matplotlib = "^3.8.3"
+fmpy = "^0.3.20"
+gymnasium = "^0.29.1"
+pytest = "^8.1.1"
+pytest-cov = "^5.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,7 @@
+.venv
+.ipynb_checkpoints
+__pycache__
+coverage.xml
+.coverage
+FMUs/.FMUOutput/
+poetry.lock
