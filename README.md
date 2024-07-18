@@ -106,6 +106,7 @@ Proceed with training the agent and save the resulting policy.
 ### 6 Evaluate performance of policy with inference
 Running one inference episode with the trained agent while capturing trajectories. To statistically assess the trained agent's performance, the
 optimized policy can be deployed for multiple randomized episodes to evaluate the results.
+
 <img src="img/diagram_inference.png" alt="DiagramInference" />
 
 ## License
