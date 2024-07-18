@@ -1,5 +1,7 @@
 # FMUGym: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)![CI](https://github.com/Fraunhofer-IIS/fmugym/actions/workflows/python-package.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CI](https://github.com/Fraunhofer-IIS/fmugym/actions/workflows/python-package.yml/badge.svg)
+[![PyPI](https://img.shields.io/pypi/v/fmugym)](https://pypi.org/project/fmugym/)
 
 <img src="img/lib_interfaces.png" alt="FMUGymInterfaces" />
 
@@ -8,20 +10,20 @@ This project provides an interface for reinforcement learning-based control of f
 For more information refer to the corresponding paper [FMUGym: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties](following soon)
 
 ## Installation
-For proper installation of the project, we recommend using a python virtual environment or [poetry](https://python-poetry.org/). To create a virtual environment, run the following command:
+### Installation via pip
+You can easily install FMUGym via pip by running the following command:
 ```bash
-python3 -m venv PATH_TO_VENV
+pip install fmugym
 ```
 
-To activate the virtual environment, run the following command:
-```bash
-source PATH_TO_VENV/bin/activate
-```
+### Installation from source
 
-To install the project, run the following command from the root direc tory of the fmugym project:
+To install the project from source, first clone this repo and then run the following command from its root directory:
 ```bash
 pip install -e .
 ```
+
+### Installation of additional Python packages
 
 Further, we recommend using jupyter notebooks for testing. To install jupyter notebook, run the following command:
 ```bash
