@@ -115,4 +115,4 @@ optimized policy can be deployed for multiple randomized episodes to evaluate th
 This project is licensed under MIT license, as found in the [LICENSE](LICENSE) file.
 
 ## Citing
-The corresponding paper was submitted to the European Group for Intelligent Computing in Engineering (EG-ICE) conference 2024 in Vigo. We will provide information for citing the paper as soon as it is published.
+Find the citation in the ride-hand sidebar under the "About" section of this repository. 
