@@ -31,7 +31,7 @@ jobs:
         poetry config virtualenvs.create true
         poetry config virtualenvs.in-project true
         poetry install
-        poetry add flake8 pytest pytest-cov
+        poetry add flake8 pytest pytest-cov>=6.1.0,<7.0.0
         source `poetry env info --path`/bin/activate
     - name: Lint with flake8
       run: |
