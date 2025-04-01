@@ -1,0 +1,61 @@
+cff-version: 1.2.0
+title: FMUGym
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file. 
+type: software
+authors:
+  - given-names: Konstantin
+    family-names: Wrede
+    email: konstantin.wrede@eas.iis.fraunhofer.de
+    affiliation: Fraunhofer EAS/IIS
+  - given-names: Chezi
+    family-names: Huang
+    affiliation: Fraunhofer EAS/IIS
+  - given-names: Tommy
+    family-names: Wohlfahrt
+    affiliation: Fraunhofer EAS/IIS
+  - given-names: Nick
+    family-names: Hartmann
+    affiliation: Fraunhofer EAS/IIS
+url: 'https://github.com/Fraunhofer-IIS/fmugym'
+abstract: >-
+  Interface to connect Reinforcement Learning libraries to
+  Functional Mock-up Units for control under uncertainties 
+keywords:
+  - Modelica
+  - FMU
+  - FMI
+  - Simulation coupling
+license: MIT
+date-released: '2024-06-29'
+preferred-citation:
+  type: conference-paper
+  authors: 
+    - given-names: Konstantin
+      family-names: Wrede
+      email: konstantin.wrede@eas.iis.fraunhofer.de
+      affiliation: Fraunhofer EAS/IIS
+    - given-names: Chezi
+      family-names: Huang
+      affiliation: Fraunhofer EAS/IIS
+    - given-names: Tommy
+      family-names: Wohlfahrt
+      affiliation: Fraunhofer EAS/IIS
+    - given-names: Nick
+      family-names: Hartmann
+      affiliation: Fraunhofer EAS/IIS
+  month: 9
+  collection-title: "Proceedings of the 31st International Workshop on Intelligent Computing in Engineering"
+  conference:
+      name: "International Workshop on Intelligent Computing in Engineering"
+      city: Vigo
+      country: ES
+      date-start: 2024-07-03
+      date-end: 2024-07-05
+  start: 647
+  end: 656
+  title: "FMUGym: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties"
+  number: 31
+  volume: 1
+  year: 2024
