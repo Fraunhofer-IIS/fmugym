@@ -7,7 +7,7 @@
 
 This project provides an interface for reinforcement learning-based control of functional mock-up units (FMUs) under uncertainties. The interface is designed to be compatible with the [Functional Mock-up Interface (FMI)](https://fmi-standard.org/) standard. It is implemented in Python and connects FMUs as control plants to pre-existing reinforcement learning libraries such as [Stable Baselines3](https://stable-baselines3.readthedocs.io/en/master/) or [SKRL](https://skrl.readthedocs.io/en/latest/) for training.
 
-For more information refer to the corresponding paper [FMUGym: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties](following soon)
+For more information refer to the corresponding paper [FMUGym: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties](https://publica.fraunhofer.de/entities/publication/d31204fd-3480-469f-9c45-5c376d81a721/fullmeta).
 
 ## Installation
 ### Installation via pip
@@ -115,4 +115,16 @@ optimized policy can be deployed for multiple randomized episodes to evaluate th
 This project is licensed under MIT license, as found in the [LICENSE](LICENSE) file.
 
 ## Citing
-Find the citation in the ride-hand sidebar under the "About" section of this repository. 
+If you use this project in your research, please cite:
+
+```BibTeX
+@inproceedings{Wrede2024FMUGym,
+  author   = {Wrede, Konstantin and Huang, Chenzi and Wohlfahrt, Tommy and Hartmann, Nick},
+  title    = {{FMUGym}: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties},
+  booktitle = {31st International Workshop on Intelligent Computing in Engineering, EG-ICE 2024},
+  year     = {2024},
+  pages    = {647--656},
+  doi      = {https://doi.org/10.35869/Proceedings_EGICE2024},
+  url      = {https://publica.fraunhofer.de/entities/publication/d31204fd-3480-469f-9c45-5c376d81a721/fullmeta},
+}
+```
