@@ -62,18 +62,34 @@ class FMUGym(ABC, gym.Env):
         self.dt_sim = config.sim_step_size
         self.dt_action = config.action_step_size
 
-        self.y_start = config.set_point_nominal_start.variables
+        # optional initial set-point nominal values
+        if hasattr(config, 'set_point_nominal_start') and getattr(config.set_point_nominal_start, 'variables', None) is not None:
+            self.y_start = config.set_point_nominal_start.variables
+        else:
+            self.y_start = {}
 
-        self.y_stop_range = config.set_point_stop.variables
+        # optional stop range and target values
+        if hasattr(config, 'set_point_stop') and getattr(config.set_point_stop, 'variables', None):
+            self.y_stop_range = config.set_point_stop.variables
+        else:
+            self.y_stop_range = {}
         self.y_stop = {}
-        # initialize y_stop target values with mean of set point range
         for ye in self.y_stop_range:
             self.y_stop[ye] = (
                 self.y_stop_range[ye].high[0] - self.y_stop_range[ye].low[0]
             ) / 2.0
 
-        self.rand_starts = config.set_point_map.variables
-        self.terminations = config.terminations.variables
+        # optional randomized starts
+        if hasattr(config, 'set_point_map') and getattr(config.set_point_map, 'variables', None):
+            self.rand_starts = config.set_point_map.variables
+        else:
+            self.rand_starts = {}
+
+        # optional terminations
+        if hasattr(config, 'terminations') and getattr(config.terminations, 'variables', None):
+            self.terminations = config.terminations.variables
+        else:
+            self.terminations = {}
 
         self.fmu_description = read_model_description(config.fmu_path)
 
@@ -90,14 +106,18 @@ class FMUGym(ABC, gym.Env):
         for variable in self.fmu_description.modelVariables:
             if variable.name in config.inputs.variables.keys():
                 self.input_dict[variable.name] = variable.valueReference
-                self.input_noise[variable.name] = config.input_noise.variables[
-                    variable.name
-                ]
+                if getattr(config.input_noise, "variables", None) is not None and variable.name in config.input_noise.variables:
+                    self.input_noise[variable.name] = config.input_noise.variables[variable.name]
+                else:
+                    # Default to zero noise if not provided
+                    self.input_noise[variable.name] = gym.spaces.Box(low=np.array([0.0]), high=np.array([0.0]), dtype=np.float32)
             if variable.name in config.outputs.variables.keys():
                 self.output_dict[variable.name] = variable.valueReference
-                self.output_noise[variable.name] = config.output_noise.variables[
-                    variable.name
-                ]
+                if getattr(config.output_noise, "variables", None) is not None and variable.name in config.output_noise.variables:
+                    self.output_noise[variable.name] = config.output_noise.variables[variable.name]
+                else:
+                    # Default to zero noise if not provided
+                    self.output_noise[variable.name] = gym.spaces.Box(low=np.array([0.0]), high=np.array([0.0]), dtype=np.float32)
             if variable.name in config.random_vars.variables.keys():
                 self.random_vars_refs[variable.name] = [
                     variable.valueReference,
@@ -157,11 +177,12 @@ class FMUGym(ABC, gym.Env):
             )
         elif self.is_fmi2:
             self.fmu.instantiate()
+            self.fmu.reset()
             self.fmu.setupExperiment(startTime=self.start_time)
-            self.fmu.enterInitializationMode()
             self.fmu.setReal(
                 init_states.keys(), init_states.values()
             )  # set randomized variables
+            self.fmu.enterInitializationMode()
             self.fmu.exitInitializationMode()
         elif self.is_fmi3:
             self.fmu.instantiate()
@@ -298,61 +319,84 @@ class FMUGym(ABC, gym.Env):
             self.observation[out_name] = np.array(value, dtype=np.float32).flatten()
         return self.observation
 
-    @abstractmethod
     def _get_info(self):
         """
         Used by step() and reset(), returns any relevant debugging information.
 
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
+
         Returns:
             The relevant debugging information.
         """
-        pass
 
-    @abstractmethod
+        return {"sample_msg": "sample message"}
+
     def _get_obs(self):
         """
         Retrieves FMU output values by possibly calling self.fmu._get_fmu_output for handling different FMU versions. This call stores data in the self.observation dictionary. It may also add output noise (using self._get_output_noise()) and update the set point (using self.setpoint_trajectory()) to return a goal-oriented observation dictionary.
 
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
+
         Returns:
             observations, e.g. as dict or array
         """
-        pass
+        self._get_fmu_output()
+        obs = np.array(list(self.observation.values())).flatten()
+        noisy_observation = obs + self._get_output_noise()
+        self.obs_dict = np.array(noisy_observation)
+        
+        return self.obs_dict
 
-    @abstractmethod
+
     def _get_input_noise(self):
         """
         Returns input noise for each input component, potentially by sampling from the self.input_noise dictionary.
 
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
+
         Returns:
             noise values in shape of inputs to be added
         """
-        pass
+        return np.zeros(len(self.input_dict), dtype=np.float32)
 
-    @abstractmethod
     def _get_output_noise(self):
         """
         Returns output noise for each output component, potentially by sampling from the self.output_noise dictionary.
 
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
+
         Returns:
             noise values in shape of outputs to be added
         """
-        pass
+        return np.zeros(len(self.output_dict), dtype=np.float32)
 
-    @abstractmethod
     def _get_terminated(self):
         """
         Returns two booleans indicating first the termination and second truncation status.
+
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
 
         A tuple containing the following elements:
             termination (bool): episode ending after finite time horizon is exceeded.
             truncation (bool): episode ending after an externally defined condition (constraint limit exceeded), thereby interrupting the MDP.
         """
-        pass
+        if self.time > self.stop_time:
+            self.reset()
+            return True, False
+        for termination in self.terminations:
+            min_value = self.terminations[termination].low[0]
+            max_value = self.terminations[termination].high[0]
+            if self.observation[termination] < min_value or self.observation[termination] > max_value:
+                self.reset()
+                return False, True
 
-    @abstractmethod
+        return False, False
+
     def _create_action_space(self, inputs):
         """
         Constructs the action space from a VarSpace object representing the inputs. It can use gymnasium.spaces.Box for continuous action spaces or gymnasium.spaces.Discrete for discrete action spaces.
+
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
 
         Parameters:
             inputs (VarSpace): The inputs used to create the action space.
@@ -360,12 +404,19 @@ class FMUGym(ABC, gym.Env):
         Returns:
             action_space: The action space constructed for the inputs.
         """
-        pass
+        lows = []
+        highs = []
+        for inp in inputs:
+            lows.append(inputs[inp].low[0])
+            highs.append(inputs[inp].high[0])
+        action_space = gym.spaces.Box(low=np.array(lows), high=np.array(highs), dtype=np.float32)
+        return action_space
 
-    @abstractmethod
     def _create_observation_space(self, outputs):
         """
         Constructs the observation space returning it possibly as a gymnasium.spaces.Dict for a goal oriented structure. The observation space typically includes observation, achieved_goal, and desired_goal, created from a VarSpace object.
+
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
 
         Parameters:
             outputs (VarSpace): The outputs used to create the observation space.
@@ -373,22 +424,37 @@ class FMUGym(ABC, gym.Env):
         Returns:
             observation_space: The observation space constructed for the outputs.
         """
-        pass
+        lows = []
+        highs = []
+        for out in outputs:
+            lows.append(outputs[out].low[0])
+            highs.append(outputs[out].high[0])
+        observation_space = gym.spaces.Box(low=np.array(lows), high=np.array(highs), dtype=np.float32)
+        return observation_space
 
-    @abstractmethod
     def _noisy_init(self):
         """
         Random variations to initial system states and dynamic parameters by sampling from self.random_vars_refs and propagates to corresponding initial output values. It also allows for direct manipulation and randomization of set point goals using the self.y_stop class variable.
 
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
+
         Returns:
             init_states (VarSpace): The initial state values with noise added.
         """
-        pass
+        # add noise to initial system state
+        init_states = {}
+        for var in self.random_vars_refs:
+            var_ref = self.random_vars_refs[var][0]
+            uniform_value = self.random_vars_refs[var][1].sample()[0]
+            self.init_states[var_ref] = uniform_value
 
-    @abstractmethod
+        return self.init_states
+
     def _process_action(self, action):
         """
         Called by self.step() to add noise to action from RL library. May be used to execute low-level controller and adapt action space.
+
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
 
         Parameters:
             action: The action to be processed.
@@ -397,27 +463,32 @@ class FMUGym(ABC, gym.Env):
             processed_action: The processed action.
 
         """
-        pass
+        processed_action = action + self._get_input_noise()
+        
+        return processed_action
 
-    @abstractmethod
     def setpoint_trajectory(self):
         """
-        Determines the set point values at the current time step within the trajectory, called by self._get_obs().
-
+        Optional set point trajectory; if not implemented, returns empty dict.
+        Might be called by _get_obs() to update target setpoints.
         Returns:
-            setpoint: The set point value for each output at the current time step.
+            dict: Default empty, override in subclass for custom behavior.
         """
-        pass
+        
+        return {}
 
-    @abstractmethod
-    def _process_reward(self):
+    def _process_reward(self, obs, acts, info):
         """
         Preprocesses the reward to adjust for predefined interfaces of compute_reward expected by e.g. StableBaselines 3 and then computes reward by calling compute_reward() for the current time step.
-        
+
+        This method provides a default implementation (returns zeros) and can be overwritten in subclasses.
+
         Returns:
             processed_reward: The processed reward value.
         """
-        pass
+        reward = self.compute_reward(obs, info)
+        
+        return reward
 
     @abstractmethod
     def compute_reward(self, *args, **kwargs):
