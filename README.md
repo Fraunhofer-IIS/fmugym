@@ -5,7 +5,7 @@
 
 <img src="img/lib_interfaces.png" alt="FMUGymInterfaces" />
 
-This project provides an interface for reinforcement learning-based control of functional mock-up units (FMUs) under uncertainties. The interface is designed to be compatible with the [Functional Mock-up Interface (FMI)](https://fmi-standard.org/) standard. It is implemented in Python and connects FMUs as control plants to pre-existing reinforcement learning libraries such as [Stable Baselines3](https://stable-baselines3.readthedocs.io/en/master/) or [SKRL](https://skrl.readthedocs.io/en/latest/) for training.
+This project provides an interface for reinforcement learning(RL)-based control of functional mock-up units (FMUs) under uncertainties. The interface is designed to be compatible with the [Functional Mock-up Interface (FMI)](https://fmi-standard.org/) standard. It is implemented in Python and connects FMUs as control plants to pre-existing RL libraries such as [Stable Baselines3](https://stable-baselines3.readthedocs.io/en/master/) or [SKRL](https://skrl.readthedocs.io/en/latest/) for training.
 
 For more information refer to the corresponding paper [FMUGym: An Interface for Reinforcement Learning-based Control of Functional Mock-up Units under Uncertainties](https://publica.fraunhofer.de/entities/publication/d31204fd-3480-469f-9c45-5c376d81a721/fullmeta).
 
@@ -30,7 +30,7 @@ Further, we recommend using jupyter notebooks for testing. To install jupyter no
 pip install notebook
 ```
 
-As reinforcement learning libraries, we tested Stable Baselines3 and SKRL. To install Stable Baselines3, run the following command:
+As RL libraries, we tested Stable Baselines3 and SKRL. To install Stable Baselines3, run the following command:
 ```bash
 pip install stable-baselines3
 ```
@@ -47,6 +47,8 @@ This project contains the following content:
     - [dummy skrl](examples/dummy_fmugym_skrl.ipynb): A linear MIMO system connected to an SKRL SAC agent with continuous action and observation space.
     - [dummy discrete](examples/dummy_discrete_fmugym.ipynb): A linear MIMO system connected to an SB3 A2C agent with discrete action and observation space.
     - [nonlinear](examples/Nonlinear_example.ipynb): A nonlinear MIMO system connected to an SB3 SAC agent with continuous action and observation space.
+    - [geom tolerance](examples/geom_tolerance_source.ipynb): Monte Carlo simulation for geometric tolerance analysis, related to Paper(tba) at the 16th International Modelica & FMI Conference.
+    - [DC Motor Workshop](examples/DC_motor_workshop.ipynb): A workshop at the 16th International Modelica & FMI Conference on controlling a DC motor optimizing classical PID control and residual RL under uncertainties.
 3. [FMUs](examples/FMUs): A collection of Modelica models and their corresponding FMUs used in the examples. We just provide FMUs exported with Open Modelica for Linux x86. If you are running on another OS / architecture, please export the FMUs accordingly. \
 Further, we chose the CVODE solver used by Open Modelica, which is causing [issues](https://github.com/OpenModelica/OpenModelica/issues/11506) in long simulation runs. So we recommend exporting Modelica models with e.g. Dymola instead on your own. 
 4. [trained_agents](examples/trained_agents): Models of RL agents after completing training.
