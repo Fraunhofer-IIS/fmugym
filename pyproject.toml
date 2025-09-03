@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fmugym"
-version = "0.1.1"
+version = "0.1.2"
 description = "Interface to connect Reinforcement Learning libraries to Functional Mock-up Units for control under uncertainties"
 authors = ["Konstantin Wrede <konstantin.wrede@eas.iis.fraunhofer.de>"]
 readme = "README.md"
