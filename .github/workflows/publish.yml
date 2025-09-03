@@ -26,6 +26,8 @@ jobs:
       - name: Configure Poetry
         run: |
           poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN_FMUGYM }}
+      - name: Clean old build artifacts
+      	run: rm -rf dist/
       - name: Build and publish to PyPI
 
         run: |
